@@ -5,9 +5,12 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Only run deploy if CI passed (we use the 'needs' in a real monorepo setup,
-# but here we keep it simple and let it run independently. In practice people
-# often add `needs: ci` when using a single workflow or reusable workflows.
+# To make this a true "CI then CD", you can either:
+# 1. Keep the Vercel dashboard auto-deploy (simplest, recommended)
+# 2. Use this workflow + repository secrets (full control from GitHub)
+#
+# If you want this workflow to only run after the main CI workflow succeeds,
+# you can change the trigger to `workflow_run` (more advanced).
 
 permissions:
   contents: read
