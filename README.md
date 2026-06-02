@@ -98,6 +98,44 @@ The pipeline is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml
 
 You can also manually trigger it from the Actions tab ("Run workflow").
 
+### Important: Pushing Workflow Changes (`.github/workflows/`)
+
+GitHub has a security restriction: **Personal Access Tokens (PATs) cannot create or modify files in `.github/workflows/` unless the token has the `workflow` scope**.
+
+If you see this error when pushing:
+
+```
+! [remote rejected] main -> main (refusing to allow a Personal Access Token to create or update workflow `.github/workflows/ci.yml` without `workflow` scope)
+```
+
+**Fix:**
+
+1. Go to https://github.com/settings/tokens
+2. Click **Generate new token** → **Tokens (classic)**
+3. Give it a name (e.g. "GEMH Website Creator - full access")
+4. **Select these scopes**:
+   - `repo` (full control of private repositories)  ← this is required
+   - `workflow` (update GitHub Action workflows)   ← **this is the critical one for CI**
+5. Click **Generate token** and **copy it immediately** (you won't see it again).
+6. Use it to push:
+
+   ```bash
+   # One-time (replace YOUR_TOKEN with the one you just copied)
+   git push https://filipgrk787:YOUR_TOKEN@github.com/filipgrk787/GEMH-Buisiness-websites.git main
+   ```
+
+   After the first successful push that includes the workflow file, you can change the remote back to the clean URL:
+
+   ```bash
+   git remote set-url origin https://github.com/filipgrk787/GEMH-Buisiness-websites.git
+   ```
+
+   Future pushes can use `git push` normally (Git will prompt for the token once and can store it in your credential helper).
+
+**Tip:** For ongoing work, consider using the [GitHub CLI](https://cli.github.com/) (`gh auth login`) — it handles scopes and authentication more cleanly for GitHub-specific operations.
+
+Once the initial push with the `workflow` scope succeeds, the CI will run and you can connect the repo to Vercel for full CD.
+
 ## Deploying the Builder (CD)
 
 The **builder app itself** (the form + live preview + ZIP generator) can be hosted so anyone can use it without cloning the repo.
