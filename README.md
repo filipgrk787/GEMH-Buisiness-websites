@@ -140,30 +140,33 @@ Once the initial push with the `workflow` scope succeeds, the CI will run and yo
 
 Git will normally prompt for your GitHub username and Personal Access Token on every `git push` / `git pull`.
 
-#### Fastest way (stores credentials in a file in your home directory)
+#### Best for WSL + Windows (uses Windows Credential Manager - secure)
+
+Most people on Windows + WSL already have Git for Windows installed. Use its built-in secure credential manager:
 
 ```bash
-# Run once
-git config --global credential.helper store
-
-# Do one push (it will ask for username + PAT this time only)
-git push origin main
-
-# Username: filipgrk787
-# Password: paste-your-PAT-here
+git config --global credential.helper "/mnt/c/Program Files/Git/mingw64/bin/git-credential-manager.exe"
 ```
 
-Git will create `~/.git-credentials` and remember it for all future HTTPS operations to GitHub.
+Then just run `git push`. The first time Git will prompt (nice dialog or terminal) for your username (`filipgrk787`) and PAT. It stores the secret safely in the Windows Credential Manager. No more prompts ever.
 
-**Security note:** The token is stored in plain text. Fine for personal machines; on shared computers use the `cache` helper instead:
+#### Simple cross-platform fallback (plain text file in home dir)
+
+```bash
+git config --global credential.helper store
+git push origin main   # enter credentials one time only
+```
+
+This creates `~/.git-credentials`. Acceptable on your personal dev machine.
+
+**Temporary memory-only (never written to disk):**
 
 ```bash
 git config --global credential.helper cache
-# optional: keep for 1 hour
-git config --global credential.helper 'cache --timeout=3600'
+git config --global credential.helper 'cache --timeout=3600'   # 1 hour
 ```
 
-#### Best long-term solution: GitHub CLI (gh)
+#### Best overall developer experience: GitHub CLI (gh)
 
 ```bash
 # Install GitHub CLI (Ubuntu/WSL/Debian)
