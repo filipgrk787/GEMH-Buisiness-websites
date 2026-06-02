@@ -1,0 +1,46 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Only run deploy if CI passed (we use the 'needs' in a real monorepo setup,
+# but here we keep it simple and let it run independently. In practice people
+# often add `needs: ci` when using a single workflow or reusable workflows.
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-production:
+    name: Deploy Production
+    runs-on: ubuntu-latest
+    # Uncomment the line below once you have a 'ci' job in your main workflow
+    # needs: [build-and-verify]   # or whatever your CI job name is
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Vercel (Production)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod --yes'   # --yes skips confirmation
+          # Optional: scope to a team
+          # vercel-scope: ${{ secrets.VERCEL_TEAM_ID }}

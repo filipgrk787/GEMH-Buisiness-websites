@@ -214,6 +214,20 @@ This is the full "edit locally → push → live on the internet" CI/CD flow.
 
 You can also deploy the built output (`npm run build` then `npm run start`) to any Node-compatible host (Railway, Fly.io, a VPS with PM2, etc.).
 
+### Advanced: Drive deploys from GitHub Actions (optional)
+
+If you prefer to trigger production deploys from a GitHub Actions workflow (instead of letting Vercel watch the repo directly), create three repository secrets:
+
+1. Go to your repo → **Settings** → **Secrets and variables** → **Actions**
+2. Add:
+   - `VERCEL_TOKEN` — create at https://vercel.com/account/tokens (needs "Full Account" scope)
+   - `VERCEL_ORG_ID` — get from your Vercel project settings (or run `vercel link` locally and look in `.vercel/project.json`)
+   - `VERCEL_PROJECT_ID` — same as above
+
+Then the workflow in `.github/workflows/deploy.yml` will deploy to production on every push to `main`.
+
+**Note:** The simplest and most common setup is still just connecting the repo in the Vercel dashboard (the "Deploy with Vercel" button above). The Actions-driven deploy is only needed if you want full control inside GitHub (e.g. custom pre-deploy steps, multiple environments, etc.).
+
 ## License / Use
 
 Free to use for any Greek company or agency building client sites. The generated sites may be used without restriction.
