@@ -84,11 +84,12 @@ This project uses **GitHub Actions** for Continuous Integration.
 
 1. You make changes locally.
 2. `git add . && git commit -m "..." && git push`
-3. GitHub Actions automatically runs on every push to `main` and on Pull Requests:
-   - Installs dependencies (with npm cache)
-   - Runs `npm run lint`
-   - Runs `npm run build` (catches TypeScript / Next.js errors)
-   - Runs `npm run verify` (validates that the core website generator still produces correct, compliant static output)
+3. GitHub Actions automatically runs on every push to `main` and on Pull Requests (see jobs below):
+   - **Lint** — ESLint
+   - **Build & Type Check** — `npm run build` (catches TypeScript / Next.js / React errors)
+   - **Verify Site Generator** — runs the full headless generation (`npm run verify`) and asserts that the 4 legal pages + Γ.Ε.ΜΗ. / ΑΦΜ / registered address compliance data are produced correctly.
+
+   The generator verification job is the most important one for this project.
 
 The status is visible via the badge at the top of this README and in the "Actions" tab.
 
