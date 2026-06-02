@@ -237,5 +237,3 @@ Free to use for any Greek company or agency building client sites. The generated
 Built as a complete, production-grade website template system.
 
 ---
-
-**Dummy update** — testing the new CI/CD pipeline (push from local PC) — June 2026
