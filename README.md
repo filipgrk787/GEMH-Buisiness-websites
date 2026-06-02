@@ -6,6 +6,8 @@
 
 **Production-ready static website generator for Greek companies.**
 
+> **Live demo**: Once deployed (see "Deploying the Builder" section below), the form + live preview + ZIP generator will be available on the internet at a public URL. Edit → Push → Live in seconds.
+
 Create fully compliant, professional, mobile-friendly business websites in minutes. The output is **pure static HTML/CSS/JS** — no server, no Node, no build step required on the hosting side. Perfect for Hostinger, cPanel, Plesk, GitHub Pages, or any traditional web host.
 
 ## Features
