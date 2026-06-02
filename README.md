@@ -40,16 +40,50 @@ Create fully compliant, professional, mobile-friendly business websites in minut
 
 See the README inside the generated ZIP for detailed Hostinger / cPanel steps and how to activate the contact form.
 
-## Developer Notes
+## Authentication (Login Required)
 
-- All generation logic lives in:
-  - `app/lib/siteGenerator.ts` — builds every HTML page + supporting files
-  - `app/lib/imageProcessor.ts` — pure browser Canvas resizing + compression
-  - `app/lib/types.ts` — data model
+The website generator is now protected behind a login screen.
 
-- The entire generated website is self-contained. You can even use the generator programmatically (Node + jsdom/canvas if needed).
+Supported login methods:
+- **Google OAuth** (recommended)
+- **Email + Password** (Credentials)
 
-- Want to add more pages, bilingual support, or extra sections? Edit the template literals inside `siteGenerator.ts`.
+### Quick Setup
+
+1. Copy the example env file:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. Generate a strong secret:
+   ```bash
+   openssl rand -base64 32
+   ```
+   Put it in `NEXTAUTH_SECRET`.
+
+3. **For Google OAuth** (recommended):
+   - Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+   - Create OAuth 2.0 Client ID (Web application)
+   - Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google` (and your production URL)
+   - Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env.local`
+
+4. **For Username + Password**:
+   - Generate a hash for your password:
+     ```bash
+     node -e 'console.log(require("bcryptjs").hashSync("YourStrongPassword123!", 10))'
+     ```
+   - Set `AUTH_USERS` as a JSON array in `.env.local`:
+     ```bash
+     AUTH_USERS='[{"email":"you@company.gr","passwordHash":"$2a$10$...","name":"Your Name"}]'
+     ```
+
+5. Restart the dev server.
+
+The entire tool (including live preview and ZIP generation) is now only accessible to logged-in users.
+
+**Note for production:** On Vercel, set the same environment variables in your project settings. Make sure `NEXTAUTH_URL` is not needed (Vercel sets it automatically).
+
+See `.env.example` for full details.
 
 ## Compliance
 

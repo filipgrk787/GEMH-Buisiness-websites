@@ -5,6 +5,7 @@ import JSZip from "jszip";
 import { Download, RefreshCw, Play, Info, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
+import { UserMenu } from "./components/auth/UserMenu";
 
 import { SiteData, DEFAULT_DATA, Service, TeamMember } from "./lib/types";
 import { processImage, createPlaceholderImage, processLogo, processHero, processFavicon, processServiceImage, processTeamPhoto } from "./lib/imageProcessor";
@@ -533,6 +534,8 @@ export default function GreekBusinessWebsiteCreator() {
                 Κατέβασε ξανά
               </button>
             )}
+
+            <UserMenu />
           </div>
         </div>
       </header>
