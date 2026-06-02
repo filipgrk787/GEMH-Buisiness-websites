@@ -136,6 +136,55 @@ If you see this error when pushing:
 
 Once the initial push with the `workflow` scope succeeds, the CI will run and you can connect the repo to Vercel for full CD.
 
+### Storing Git Credentials (avoid typing username + PAT on every push)
+
+Git will normally prompt for your GitHub username and Personal Access Token on every `git push` / `git pull`.
+
+#### Fastest way (stores credentials in a file in your home directory)
+
+```bash
+# Run once
+git config --global credential.helper store
+
+# Do one push (it will ask for username + PAT this time only)
+git push origin main
+
+# Username: filipgrk787
+# Password: paste-your-PAT-here
+```
+
+Git will create `~/.git-credentials` and remember it for all future HTTPS operations to GitHub.
+
+**Security note:** The token is stored in plain text. Fine for personal machines; on shared computers use the `cache` helper instead:
+
+```bash
+git config --global credential.helper cache
+# optional: keep for 1 hour
+git config --global credential.helper 'cache --timeout=3600'
+```
+
+#### Best long-term solution: GitHub CLI (gh)
+
+```bash
+# Install GitHub CLI (Ubuntu/WSL/Debian)
+sudo apt update
+sudo apt install gh -y
+
+# Login (this creates a PAT for you with the scopes you choose)
+gh auth login
+
+# Tell git to use gh for credentials
+gh auth setup-git
+```
+
+After this, `git push` and `git pull` will "just work" without ever asking for username or password again. `gh` also makes creating releases, managing issues, etc. much nicer.
+
+You can even do the login with the exact scopes we need:
+
+```bash
+gh auth login --scopes "repo,workflow"
+```
+
 ## Deploying the Builder (CD)
 
 The **builder app itself** (the form + live preview + ZIP generator) can be hosted so anyone can use it without cloning the repo.
