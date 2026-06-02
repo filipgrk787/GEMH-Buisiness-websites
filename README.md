@@ -200,7 +200,7 @@ Vercel is the best fit for Next.js apps and gives you true **Continuous Deployme
 1. Go to [vercel.com](https://vercel.com) and sign in with GitHub.
 2. Click **Add New Project** → **Import Git Repository**.
 3. Select `filipgrk787/GEMH-Buisiness-websites`.
-4. Vercel will auto-detect it's a Next.js project — just click **Deploy**.
+4. Vercel will auto-detect it's a Next.js project (a `vercel.json` is also present for explicit config and headers) — just click **Deploy**.
 
 **After setup:**
 
@@ -209,6 +209,8 @@ Vercel is the best fit for Next.js apps and gives you true **Continuous Deployme
 - Pull Requests get preview deployments automatically (great for testing changes).
 
 This is the full "edit locally → push → live on the internet" CI/CD flow.
+
+A `vercel.json` is included in the repo for explicit Next.js configuration and basic security headers (the deployment will work without it too, but it's recommended).
 
 ### Alternative: Self-hosted / Other platforms
 
