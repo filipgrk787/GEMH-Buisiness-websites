@@ -191,9 +191,15 @@ You can even do the login with the exact scopes we need:
 gh auth login --scopes "repo,workflow"
 ```
 
-## Deploying the Builder (CD)
+## Deploying the Builder (CD) — Get it live on the internet
 
-The **builder app itself** (the form + live preview + ZIP generator) can be hosted so anyone can use it without cloning the repo.
+The **builder app itself** (the form + live preview + ZIP generator) can be hosted publicly.
+
+Once deployed:
+- Anyone can use the full tool at a public URL (no need to `npm run dev` locally).
+- `git push` from your PC → GitHub Actions CI runs (lint + build + full generator verification) → site redeploys.
+
+This gives you the complete "develop locally → push → live on the internet" flow.
 
 ### Recommended: Vercel (Free + Instant)
 
