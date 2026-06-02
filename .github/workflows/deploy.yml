@@ -1,16 +1,18 @@
 name: Deploy to Vercel
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
     branches: [main]
   workflow_dispatch:
 
-# To make this a true "CI then CD", you can either:
-# 1. Keep the Vercel dashboard auto-deploy (simplest, recommended)
-# 2. Use this workflow + repository secrets (full control from GitHub)
+# This deploy workflow now only triggers after the "CI" workflow completes successfully on main.
+# This gives you proper "CI then CD".
 #
-# If you want this workflow to only run after the main CI workflow succeeds,
-# you can change the trigger to `workflow_run` (more advanced).
+# Alternative (often simpler): Just connect the repo in the Vercel dashboard.
+# Vercel will auto-deploy on push and run its own build (it will still benefit from the GitHub CI status checks).
 
 permissions:
   contents: read
@@ -19,8 +21,7 @@ jobs:
   deploy-production:
     name: Deploy Production
     runs-on: ubuntu-latest
-    # Uncomment the line below once you have a 'ci' job in your main workflow
-    # needs: [build-and-verify]   # or whatever your CI job name is
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Checkout
