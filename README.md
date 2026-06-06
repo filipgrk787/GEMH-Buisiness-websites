@@ -98,8 +98,8 @@ Supported login methods:
      ```env
      GOOGLE_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
      GOOGLE_CLIENT_SECRET=your-client-secret-here
-     NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
      ```
+     (The login page will automatically show the Google button once these are set correctly.)
    - Restart your dev server.
 
    **Step 5: For production (Vercel)**
