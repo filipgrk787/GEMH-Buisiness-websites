@@ -177,8 +177,8 @@ See `.env.example` in the repo for the full list with comments.
 
 If the generator loads directly without redirecting to login after setting env vars and redeploying:
 
-- Confirm the variables (especially `NEXTAUTH_SECRET`) are configured for the **Production** environment in Vercel (not just Preview or Development).
-- Set `NEXTAUTH_URL` explicitly to your production domain, e.g. `https://your-project.vercel.app`.
+- Confirm the variables (especially `NEXTAUTH_SECRET` and `NEXTAUTH_URL`) are configured for the **Production** environment in Vercel (not just Preview or Development).
+- Set `NEXTAUTH_URL` explicitly to your production domain, e.g. `https://your-project.vercel.app` (this is important for OAuth callbacks and cookies on Vercel).
 - Trigger a fresh **Redeploy** from the Vercel dashboard (changing env vars sometimes requires an explicit redeploy).
 - Use an incognito window — old cookies/sessions from local dev can interfere.
 - Check Vercel **Deployment Logs** and **Runtime Logs** (under the deployment) for errors from middleware or next-auth.
