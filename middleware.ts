@@ -2,7 +2,7 @@ import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export default withAuth(
-  function middleware(req) {
+  function middleware() {
     // Additional protection: if no secret is configured in production, block access
     // (this helps catch misconfigured Vercel env vars)
     if (process.env.NODE_ENV === "production" && !process.env.NEXTAUTH_SECRET) {

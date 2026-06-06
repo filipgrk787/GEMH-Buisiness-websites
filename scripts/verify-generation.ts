@@ -2,7 +2,6 @@
  * Headless verification of the full generation pipeline.
  * Provides minimal DOM + Canvas shims so generator + image processor run in Node.
  */
-// @ts-nocheck
 import { JSDOM } from "jsdom";
 import { SiteData, DEFAULT_DATA } from "../app/lib/types";
 import { generateSite } from "../app/lib/siteGenerator";
@@ -13,18 +12,18 @@ function setupDomAndCanvas() {
     resources: "usable",
   });
 
-  // @ts-expect-error
+  // @ts-expect-error -- JSDOM window is not assignable to global in this Node version
   global.window = dom.window;
-  // @ts-expect-error
+  // @ts-expect-error -- JSDOM document is not assignable to global in this Node version
   global.document = dom.window.document;
-  // @ts-expect-error
+  // @ts-expect-error -- JSDOM HTMLCanvasElement is not assignable to global in this Node version
   global.HTMLCanvasElement = dom.window.HTMLCanvasElement;
 
   // Minimal canvas context + toBlob/toDataURL implementation
-  const proto = dom.window.HTMLCanvasElement.prototype as any;
+  const proto = dom.window.HTMLCanvasElement.prototype as unknown as { getContext: unknown };
 
-  proto.getContext = function (contextType: string) {
-    const ctx: any = {};
+  proto.getContext = function () {
+    const ctx: Record<string, unknown> = {};
     ctx.canvas = this;
 
     ctx.fillStyle = "#000";
@@ -52,12 +51,12 @@ function setupDomAndCanvas() {
     this.width = this.width || 400;
     this.height = this.height || 300;
 
-    this.toDataURL = (type = "image/png") => {
+    this.toDataURL = () => {
       // 1x1 transparent png
       return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
     };
 
-    this.toBlob = (cb: (b: Blob | null) => void, type = "image/png", quality?: number) => {
+    this.toBlob = (cb: (b: Blob | null) => void, type = "image/png") => {
       const dataUrl = this.toDataURL(type);
       const base64 = dataUrl.split(",")[1];
       const bytes = Buffer.from(base64, "base64");

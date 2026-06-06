@@ -21,7 +21,7 @@ export async function generateSite(data: SiteData): Promise<GeneratedSite> {
   const assets = await processAllAssets(data);
 
   // 2. Build CSS (color variables + full stylesheet)
-  const css = buildStylesheet(data);
+  buildStylesheet(data); // styles are inlined per-page; no top-level css export needed here
 
   // 3. Build each HTML page (inject content + colors + asset paths)
   const indexHtml = buildIndex(data, assets, css);
@@ -47,7 +47,7 @@ export async function generateSite(data: SiteData): Promise<GeneratedSite> {
     "sitemap.xml": new Blob([sitemap], { type: "application/xml;charset=utf-8" }),
     ".htaccess": new Blob([htaccess], { type: "text/plain;charset=utf-8" }),
     "README.md": new Blob([readme], { type: "text/markdown;charset=utf-8" }),
-    "404.html": new Blob([build404(data, css)], { type: "text/html;charset=utf-8" }),
+    "404.html": new Blob([build404(data)], { type: "text/html;charset=utf-8" }),
   };
 
   // Add images
@@ -723,8 +723,7 @@ function buildContact(data: SiteData, assets: ProcessedAssets, css: string): str
 </html>`;
 }
 
-function build404(data: SiteData, css: string): string {
-  const logoPath = ""; // no logo needed
+function build404(data: SiteData): string {
   return `<!DOCTYPE html>
 <html lang="el">
 <head>

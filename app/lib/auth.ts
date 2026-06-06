@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
         let users: Array<{ email: string; passwordHash: string; name?: string }> = [];
         try {
           users = JSON.parse(usersEnv);
-        } catch (e) {
+        } catch {
           console.error("Failed to parse AUTH_USERS env var. It must be valid JSON.");
           return null;
         }
@@ -88,7 +88,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token && session.user) {
-        (session.user as any).id = token.id;
+        (session.user as { id?: string }).id = token.id as string | undefined;
       }
       return session;
     },

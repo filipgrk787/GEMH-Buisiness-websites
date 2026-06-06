@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import { SiteData, DEFAULT_DATA, Service, TeamMember } from "./lib/types";
-import { processImage, createPlaceholderImage, processLogo, processHero, processFavicon, processServiceImage, processTeamPhoto } from "./lib/imageProcessor";
+import { createPlaceholderImage } from "./lib/imageProcessor";
 import { generateSite } from "./lib/siteGenerator";
 import ImageUpload from "./components/ImageUpload";
 
@@ -24,7 +24,7 @@ async function fileToDataUrl(file: File): Promise<string> {
 }
 
 export default function GreekBusinessWebsiteCreator() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   // Client-side protection as a safety net (middleware should handle most redirects)
@@ -33,18 +33,6 @@ export default function GreekBusinessWebsiteCreator() {
       router.push("/login");
     }
   }, [status, router]);
-
-  // Show a simple loading state while we determine auth status
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
-        <div className="text-center">
-          <Loader2 className="mx-auto mb-3 animate-spin" size={32} />
-          <p>Checking authentication...</p>
-        </div>
-      </div>
-    );
-  }
 
   const [data, setData] = useState<SiteData>(DEFAULT_DATA);
   const [previews, setPreviews] = useState<Record<string, string>>({});
@@ -57,12 +45,12 @@ export default function GreekBusinessWebsiteCreator() {
   const [previewPage, setPreviewPage] = useState<'home' | 'services' | 'about' | 'contact'>('home');
 
   // Update a top-level field
-  const update = (field: keyof SiteData, value: any) => {
+  const update = (field: keyof SiteData, value: unknown) => {
     setData((prev) => ({ ...prev, [field]: value }));
   };
 
   // Update nested contact etc (not needed much)
-  const updateBusiness = (field: keyof SiteData, value: any) => {
+  const updateBusiness = (field: keyof SiteData, value: unknown) => {
     update(field, value);
   };
 
@@ -78,7 +66,7 @@ export default function GreekBusinessWebsiteCreator() {
     update("services", [...data.services, newSvc]);
   };
 
-  const updateService = (id: string, field: keyof Service, value: any) => {
+  const updateService = (id: string, field: keyof Service, value: unknown) => {
     update(
       "services",
       data.services.map((s) => (s.id === id ? { ...s, [field]: value } : s))
@@ -108,7 +96,7 @@ export default function GreekBusinessWebsiteCreator() {
     update("team", [...data.team, newMember]);
   };
 
-  const updateTeam = (id: string, field: keyof TeamMember, value: any) => {
+  const updateTeam = (id: string, field: keyof TeamMember, value: unknown) => {
     update(
       "team",
       data.team.map((m) => (m.id === id ? { ...m, [field]: value } : m))
@@ -361,7 +349,7 @@ export default function GreekBusinessWebsiteCreator() {
     } finally {
       setIsBuildingPreview(false);
     }
-  }, [data, previews, previewPage]);
+  }, [data, previews, previewPage]); // eslint-disable-line react-hooks/exhaustive-deps -- preparePreviewHtml is stable pure function
 
   // Debounced auto preview rebuild (when form data or uploads change)
   useEffect(() => {
@@ -514,6 +502,19 @@ export default function GreekBusinessWebsiteCreator() {
     if (which === "primary") update("primaryColor", hex);
     else update("secondaryColor", hex);
   };
+
+  // Show a simple loading state while we determine auth status
+  // (this must come after all hooks but before the main render)
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
+        <div className="text-center">
+          <Loader2 className="mx-auto mb-3 animate-spin" size={32} />
+          <p>Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-zinc-50">
@@ -788,7 +789,7 @@ export default function GreekBusinessWebsiteCreator() {
               <div className="section-header">6. Σχετικά με την Εταιρεία</div>
               <div className="space-y-4">
                 <div>
-                  <div className="label">Κείμενο "Σχετικά" (About Us)</div>
+                  <div className="label">Κείμενο &quot;Σχετικά&quot; (About Us)</div>
                   <textarea className="input min-h-[120px]" value={data.aboutText} onChange={(e) => updateBusiness("aboutText", e.target.value)} />
                 </div>
                 <div>

@@ -20,7 +20,7 @@ export default function LoginPage() {
         const res = await fetch("/api/auth/providers");
         const data = await res.json();
         setGoogleEnabled(!!data.google);
-      } catch (e) {
+      } catch {
         setGoogleEnabled(false);
       } finally {
         setProvidersLoading(false);
@@ -29,7 +29,7 @@ export default function LoginPage() {
     checkProviders();
   }, []);
 
-  const handleCredentialsLogin = async (e: React.FormEvent) => {
+  const handleCredentialsLogin = async () => {
     e.preventDefault();
     setError("");
     setLoading(true);
