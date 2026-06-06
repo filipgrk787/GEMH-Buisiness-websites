@@ -61,11 +61,51 @@ Supported login methods:
    ```
    Put it in `NEXTAUTH_SECRET`.
 
-3. **For Google OAuth** (recommended):
-   - Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
-   - Create OAuth 2.0 Client ID (Web application)
-   - Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google` (and your production URL)
-   - Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env.local`
+3. **For Google OAuth** (recommended) — Detailed steps:
+
+   **Step 1: Go to Google Cloud Console**
+   - Open https://console.cloud.google.com/
+   - Create a new project (or select an existing one).
+
+   **Step 2: Configure the OAuth Consent Screen** (very important)
+   - In the left sidebar, go to **APIs & Services > OAuth consent screen**.
+   - Choose **External** (unless you have a Google Workspace organization).
+   - Fill in the required fields:
+     - App name: e.g. "Greek Business Website Creator"
+     - User support email: your email
+     - Developer contact information: your email
+   - Click **Save and Continue**.
+   - On the **Scopes** screen, click **Add or Remove Scopes**, select `.../auth/userinfo.email` and `.../auth/userinfo.profile`, then continue.
+   - On the **Test users** screen, add your own Google email (and any colleagues) so they can log in while the app is in "Testing" mode.
+   - Click **Save and Continue**.
+
+   **Step 3: Create the OAuth Client (Web Application)**
+   - Go to **APIs & Services > Credentials**.
+   - Click **+ Create Credentials > OAuth client ID**.
+   - For **Application type**, select **Web application**.
+   - Give it a name, e.g. "Greek Website Creator - Web".
+   - Under **Authorized JavaScript origins**, add:
+     - `http://localhost:3000`
+     - `https://your-vercel-project.vercel.app` (replace with your real deployed URL)
+   - Under **Authorized redirect URIs**, add **exactly** these two:
+     - `http://localhost:3000/api/auth/callback/google`
+     - `https://your-vercel-project.vercel.app/api/auth/callback/google`
+   - Click **Create**.
+   - Copy the **Client ID** and **Client Secret**.
+
+   **Step 4: Add to your environment**
+   - In `.env.local` (and later in Vercel):
+     ```env
+     GOOGLE_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
+     GOOGLE_CLIENT_SECRET=your-client-secret-here
+     NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
+     ```
+   - Restart your dev server.
+
+   **Step 5: For production (Vercel)**
+   - Add the same three variables in Vercel Project Settings → Environment Variables.
+   - Redeploy after adding them.
+   - Make sure the production redirect URI is added in Google Console (step 3 above).
 
 4. **For Username + Password**:
    - Generate a hash for your password:
