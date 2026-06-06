@@ -132,7 +132,9 @@ The entire tool (including live preview and ZIP generation) is now only accessib
 2. Go to your Vercel project dashboard:
    - **Settings** → **Environment Variables**
 
-3. Add the following variables (set them for **Production**, **Preview**, and **Development** as needed):
+3. **Important UI note**: After you save a variable, Vercel **never displays the actual value** again (even when you click "Edit"). You will only see the key name. The value field will appear empty. This is intentional for security — the values are stored encrypted. If you need to change a value later, just paste the new one in the empty field.
+
+   Add the following variables (set them for **Production**, **Preview**, and **Development** as needed):
 
    | Name                        | Value (example)                                      | Secret? | Notes |
    |-----------------------------|------------------------------------------------------|---------|-------|
