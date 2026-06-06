@@ -78,12 +78,15 @@ export default function ImageUpload({
         <div className="upload-zone has-image p-3">
           <div className="relative">
             {previewUrl ? (
-              <img
-                src={previewUrl}
-                alt="preview"
-                className="preview-img"
-                style={{ aspectRatio: aspect === "1:1" ? "1/1" : aspect === "16:9" ? "16/9" : "auto" }}
-              />
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={previewUrl}
+                  alt="preview"
+                  className="preview-img"
+                  style={{ aspectRatio: aspect === "1:1" ? "1/1" : aspect === "16:9" ? "16/9" : "auto" }}
+                />
+              </>
             ) : (
               <div className="h-[110px] flex items-center justify-center bg-zinc-100 rounded-lg text-sm text-zinc-500">
                 <ImageIcon size={28} className="mr-2" /> {currentFile?.name}

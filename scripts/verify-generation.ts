@@ -12,15 +12,12 @@ function setupDomAndCanvas() {
     resources: "usable",
   });
 
-  // @ts-expect-error -- JSDOM window is not assignable to global in this Node version
-  global.window = dom.window;
-  // @ts-expect-error -- JSDOM document is not assignable to global in this Node version
-  global.document = dom.window.document;
-  // @ts-expect-error -- JSDOM HTMLCanvasElement is not assignable to global in this Node version
-  global.HTMLCanvasElement = dom.window.HTMLCanvasElement;
+  global.window = dom.window as any;
+  global.document = dom.window.document as any;
+  global.HTMLCanvasElement = dom.window.HTMLCanvasElement as any;
 
   // Minimal canvas context + toBlob/toDataURL implementation
-  const proto = dom.window.HTMLCanvasElement.prototype as unknown as { getContext: unknown };
+  const proto = dom.window.HTMLCanvasElement.prototype as unknown as any;
 
   proto.getContext = function () {
     const ctx: Record<string, unknown> = {};

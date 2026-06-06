@@ -21,7 +21,7 @@ export async function generateSite(data: SiteData): Promise<GeneratedSite> {
   const assets = await processAllAssets(data);
 
   // 2. Build CSS (color variables + full stylesheet)
-  buildStylesheet(data); // styles are inlined per-page; no top-level css export needed here
+  const css = buildStylesheet(data);
 
   // 3. Build each HTML page (inject content + colors + asset paths)
   const indexHtml = buildIndex(data, assets, css);

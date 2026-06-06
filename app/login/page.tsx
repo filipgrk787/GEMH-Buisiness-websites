@@ -29,7 +29,7 @@ export default function LoginPage() {
     checkProviders();
   }, []);
 
-  const handleCredentialsLogin = async () => {
+  const handleCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
