@@ -6,6 +6,8 @@ import { Download, RefreshCw, Play, Info, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
 import { UserMenu } from "./components/auth/UserMenu";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 import { SiteData, DEFAULT_DATA, Service, TeamMember } from "./lib/types";
 import { processImage, createPlaceholderImage, processLogo, processHero, processFavicon, processServiceImage, processTeamPhoto } from "./lib/imageProcessor";
@@ -22,6 +24,28 @@ async function fileToDataUrl(file: File): Promise<string> {
 }
 
 export default function GreekBusinessWebsiteCreator() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Client-side protection as a safety net (middleware should handle most redirects)
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  // Show a simple loading state while we determine auth status
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
+        <div className="text-center">
+          <Loader2 className="mx-auto mb-3 animate-spin" size={32} />
+          <p>Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
   const [data, setData] = useState<SiteData>(DEFAULT_DATA);
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const [isGenerating, setIsGenerating] = useState(false);
