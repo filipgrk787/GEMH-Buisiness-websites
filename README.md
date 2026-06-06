@@ -121,9 +121,57 @@ Supported login methods:
 
 The entire tool (including live preview and ZIP generation) is now only accessible to logged-in users.
 
-**Note for production:** On Vercel, set the same environment variables in your project settings. Make sure `NEXTAUTH_URL` is not needed (Vercel sets it automatically).
+**Note for production (Vercel deployment):**
 
-See `.env.example` for full details.
+**Do NOT commit real credentials to GitHub.** The `.env*` files are already ignored by `.gitignore`.
+
+### Setting up Environment Variables on Vercel (recommended way)
+
+1. Push your code to GitHub first (without any real `.env` files).
+
+2. Go to your Vercel project dashboard:
+   - **Settings** → **Environment Variables**
+
+3. Add the following variables (set them for **Production**, **Preview**, and **Development** as needed):
+
+   | Name                        | Value (example)                                      | Secret? | Notes |
+   |-----------------------------|------------------------------------------------------|---------|-------|
+   | `NEXTAUTH_SECRET`           | A long random string (see below)                     | Yes     | Required for sessions |
+   | `GOOGLE_CLIENT_ID`          | Your Google OAuth Client ID                          | No      | From Google Cloud Console |
+   | `GOOGLE_CLIENT_SECRET`      | Your Google OAuth Client Secret                      | Yes     | From Google Cloud Console |
+   | `AUTH_USERS`                | JSON array with user objects (see below)             | Yes     | For email/password login |
+   | `NEXTAUTH_URL`              | `https://your-project.vercel.app`                    | No      | Optional but recommended (Vercel often auto-detects) |
+
+4. **Generate `NEXTAUTH_SECRET`** (run locally):
+   ```bash
+   openssl rand -base64 32
+   ```
+   Copy the output and paste it as the value.
+
+5. **For `AUTH_USERS`** (email + password login):
+   - Create hashed passwords locally:
+     ```bash
+     node -e 'console.log(require("bcryptjs").hashSync("YourStrongPassword123!", 10))'
+     ```
+   - Then create a JSON string like:
+     ```json
+     [{"email":"admin@yourcompany.gr","passwordHash":"$2a$10$...","name":"Admin User"}]
+     ```
+   - Paste the whole JSON as the value of `AUTH_USERS`.
+
+6. After adding the variables, **Redeploy** your project (or push a new commit).
+
+### Google Cloud Console Reminder
+Make sure you add your **production Vercel URL** as an authorized redirect URI:
+- `https://your-project.vercel.app/api/auth/callback/google`
+
+(Also add the JavaScript origin `https://your-project.vercel.app`)
+
+See the detailed Google Console setup instructions in the Authentication section above.
+
+Once the variables are set in Vercel, your deployed site will have working Google OAuth and username/password login, and none of your real credentials will ever be in the GitHub repo.
+
+See `.env.example` in the repo for the full list with comments.
 
 ## Compliance
 
