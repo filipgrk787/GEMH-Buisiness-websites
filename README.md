@@ -169,9 +169,22 @@ Make sure you add your **production Vercel URL** as an authorized redirect URI:
 
 See the detailed Google Console setup instructions in the Authentication section above.
 
-Once the variables are set in Vercel, your deployed site will have working Google OAuth and username/password login, and none of your real credentials will ever be in the GitHub repo.
+Once the variables are set in Vercel and you redeploy, your deployed site will have working Google OAuth and username/password login, and none of your real credentials will ever be in the GitHub repo.
 
 See `.env.example` in the repo for the full list with comments.
+
+### Troubleshooting: Login screen not appearing on the live Vercel site
+
+If the generator loads directly without redirecting to login after setting env vars and redeploying:
+
+- Confirm the variables (especially `NEXTAUTH_SECRET`) are configured for the **Production** environment in Vercel (not just Preview or Development).
+- Set `NEXTAUTH_URL` explicitly to your production domain, e.g. `https://your-project.vercel.app`.
+- Trigger a fresh **Redeploy** from the Vercel dashboard (changing env vars sometimes requires an explicit redeploy).
+- Use an incognito window — old cookies/sessions from local dev can interfere.
+- Check Vercel **Deployment Logs** and **Runtime Logs** (under the deployment) for errors from middleware or next-auth.
+- Make sure your Google OAuth client in Google Cloud Console includes the exact production redirect URI.
+
+The app includes both edge middleware protection and a client-side session guard (you may briefly see "Checking authentication..." before a redirect).
 
 ## Compliance
 
